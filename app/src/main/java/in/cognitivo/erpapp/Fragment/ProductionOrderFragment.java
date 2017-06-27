@@ -5,11 +5,18 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -34,7 +41,13 @@ public class ProductionOrderFragment extends Fragment {
     private static final String  id_production_line = "id_production_line";
     private String mParam1;
 
+
+    private ProductionOrderAdapter mAdapter;
+    private  RecyclerView recycleview_aux;
+
     private OnListFragmentInteractionListener mListener;
+
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,6 +79,7 @@ public class ProductionOrderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_productionorder_list, container, false);
         container.findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+        setHasOptionsMenu(true);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -82,7 +96,7 @@ public class ProductionOrderFragment extends Fragment {
             productionOrderModelAcces.callProductionOrder(mParam1,view,mListener,container);
             //recyclerView.setAdapter(new ProductionOrderAdapter(DummyContent.ITEMS, mListener));
 
-
+            recycleview_aux = recyclerView;
             /**
              * RecyclerView: Implementing single item click and long press (Part-II)
              * */
@@ -106,6 +120,8 @@ public class ProductionOrderFragment extends Fragment {
 
 
         }
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         return view;
     }
 
@@ -151,5 +167,36 @@ public class ProductionOrderFragment extends Fragment {
         fragmentTransaction.replace(R.id.content, orderDetailFragment.newOrderDetail(id_order));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+        MenuItem search = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        search(searchView);
+        searchView.setQueryHint("Search");
+        search(searchView);
+    }
+
+    private void search(SearchView searchView) {
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter = (ProductionOrderAdapter) recycleview_aux.getAdapter();
+                if (mAdapter != null)
+                    mAdapter.getFilter().filter(newText);
+
+                return true;
+            }
+        });
     }
 }

@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import in.cognitivo.erpapp.R;
 import in.cognitivo.erpapp.Utility.URL;
 import in.cognitivo.erpapp.dummy.DummyContent.DummyItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,13 +24,15 @@ import java.util.List;
  * specified {@link ExecutionDetailFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetailAdapter.ViewHolder> {
+public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetailAdapter.ViewHolder> implements Filterable{
 
     private final List<ExecutionDetail> mValues;
+    private  List<ExecutionDetail> mValuesFilter;
     private final ExecutionDetailFragment.OnListFragmentInteractionListener mListener;
 
     public ExecutionDetailAdapter(List<ExecutionDetail> items, ExecutionDetailFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
+        mValuesFilter = items;
         mListener = listener;
     }
 
@@ -40,9 +45,9 @@ public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetail
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getQuantity());
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mItem = mValuesFilter.get(position);
+        holder.mIdView.setText(mValuesFilter.get(position).getQuantity());
+        holder.mContentView.setText(mValuesFilter.get(position).getName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +63,7 @@ public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetail
         holder.imgViewRemoveIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String id_execution = mValues.get(position).getId();
+                String id_execution = mValuesFilter.get(position).getId();
                 ProductionOrderModelAcces productionOrderModelAcces = new ProductionOrderModelAcces(URL.BASE_URL);
                 productionOrderModelAcces.deleteExecution(id_execution);
 
@@ -67,15 +72,55 @@ public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetail
         });
     }
 
-    public void removeAt(int position) {
+    private void removeAt(int position) {
+        mValuesFilter.remove(position);
         mValues.remove(position);
         notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mValuesFilter.size());
         notifyItemRangeChanged(position, mValues.size());
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValuesFilter.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+
+                if (charString.isEmpty()) {
+                    mValuesFilter =  mValues;
+                } else {
+
+                    ArrayList<ExecutionDetail> filteredList = new ArrayList<>();
+
+                    for (ExecutionDetail androidVersion : mValues) {
+
+                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+
+                            filteredList.add(androidVersion);
+                        }
+                    }
+
+                    mValuesFilter = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mValuesFilter;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mValuesFilter = (ArrayList<ExecutionDetail>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

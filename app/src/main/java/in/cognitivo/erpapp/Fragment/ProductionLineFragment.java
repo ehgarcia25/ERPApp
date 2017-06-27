@@ -6,6 +6,8 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -36,7 +38,7 @@ import in.cognitivo.erpapp.Utility.URL;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ProductionLineFragment extends Fragment implements SearchView.OnQueryTextListener, MenuItem.OnActionExpandListener{
+public class ProductionLineFragment extends Fragment implements  MenuItem.OnActionExpandListener{
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -44,10 +46,11 @@ public class ProductionLineFragment extends Fragment implements SearchView.OnQue
     private String mParam1;
 
     private ProductionLineAdapter mAdapter;
+    private  RecyclerView recycleview_aux;
 
     private OnListFragmentInteractionListener mListener;
 
-    private  RecyclerView recycleview_aux;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -134,6 +137,8 @@ public class ProductionLineFragment extends Fragment implements SearchView.OnQue
 
 
         //container.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         return view;
     }
@@ -167,13 +172,13 @@ public class ProductionLineFragment extends Fragment implements SearchView.OnQue
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu,inflater);
         MenuItem search = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) search.getActionView();
-        searchView.setOnQueryTextListener(this);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        search(searchView);
         searchView.setQueryHint("Search");
-        //search(searchView);
+        search(searchView);
     }
 
-  /*  private void search(SearchView searchView) {
+    private void search(SearchView searchView) {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -184,25 +189,16 @@ public class ProductionLineFragment extends Fragment implements SearchView.OnQue
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                mAdapter = (ProductionLineAdapter) recycleview_aux.getAdapter();
+                if (mAdapter != null)
+                    mAdapter.getFilter().filter(newText);
 
-                if (mAdapter != null) mAdapter.getFilter().filter(newText);
                 return true;
             }
         });
-    }*/
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
 
-        if (mAdapter != null)
-            mAdapter.getFilter().filter(newText);
-        return true;
-    }
 
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
@@ -244,6 +240,7 @@ public class ProductionLineFragment extends Fragment implements SearchView.OnQue
         fragmentTransaction.commit();
         
     }
+
 
 
 }

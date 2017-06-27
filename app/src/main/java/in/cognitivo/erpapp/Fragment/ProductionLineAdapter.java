@@ -21,12 +21,13 @@ import in.cognitivo.erpapp.R;
  */
 public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAdapter.ViewHolder> implements Filterable {
 
-    private final List<ProductionLine> mValues;
+    private  List<ProductionLine> mValues;
     private  List<ProductionLine> mValuesFilter;
     private final ProductionLineFragment.OnListFragmentInteractionListener mListener;
 
     public ProductionLineAdapter(List<ProductionLine> items, ProductionLineFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
+        mValuesFilter = items;
         mListener = listener;
     }
 
@@ -40,8 +41,8 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getId());
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mIdView.setText(mValuesFilter.get(position).getId());
+        holder.mContentView.setText(mValuesFilter.get(position).getName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +58,7 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValuesFilter.size();
     }
 
     @Override
@@ -69,15 +70,14 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
                 String charString = charSequence.toString();
 
                 if (charString.isEmpty()) {
-
-                    mValuesFilter = mValues;
+                    mValuesFilter =  mValues;
                 } else {
 
                     ArrayList<ProductionLine> filteredList = new ArrayList<>();
 
                     for (ProductionLine androidVersion : mValues) {
 
-                        if (androidVersion.getName().toLowerCase().contains(charString)) {
+                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
 
                             filteredList.add(androidVersion);
                         }
@@ -93,8 +93,7 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mValuesFilter = (List<ProductionLine>) filterResults.values;
-                //setListAdapter(mValuesFilter);
+                mValuesFilter = (ArrayList<ProductionLine>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
@@ -104,7 +103,7 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        //public DummyItem mItem;
+        public ProductionLine mItem;
 
         public ViewHolder(View view) {
             super(view);
@@ -121,5 +120,8 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
 
     public List<ProductionLine> getmValues(){
         return mValues;
+    }
+    public List<ProductionLine> getmValuesFilter(){
+        return mValuesFilter;
     }
 }

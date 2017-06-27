@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import in.cognitivo.erpapp.Entity.ProductionOrderDetail;
@@ -20,13 +23,15 @@ import in.cognitivo.erpapp.dummy.DummyContent.DummyItem;
  * specified {@link OrderDetailFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.ViewHolder> {
+public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.ViewHolder> implements Filterable{
 
     private final List<ProductionOrderDetail> mValues;
+    private  List<ProductionOrderDetail> mValuesFilter;
     private final OrderDetailFragment.OnListFragmentInteractionListener mListener;
 
     public OrderDetailAdapter(List<ProductionOrderDetail> items, OrderDetailFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
+        mValuesFilter = items;
         mListener = listener;
     }
 
@@ -39,10 +44,10 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getQuantity_real());
-        holder.mContentView.setText(mValues.get(position).getName());
-        holder.mIdDetailView.setText(mValues.get(position).getId());
+        holder.mItem = mValuesFilter.get(position);
+        holder.mIdView.setText(mValuesFilter.get(position).getQuantity_real());
+        holder.mContentView.setText(mValuesFilter.get(position).getName());
+        holder.mIdDetailView.setText(mValuesFilter.get(position).getId());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +68,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mValuesFilter.size();
     }
 
     public List<ProductionOrderDetail> getmValues(){
@@ -125,5 +130,42 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         }
     }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+
+                if (charString.isEmpty()) {
+                    mValuesFilter =  mValues;
+                } else {
+
+                    ArrayList<ProductionOrderDetail> filteredList = new ArrayList<>();
+
+                    for (ProductionOrderDetail androidVersion : mValues) {
+
+                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+
+                            filteredList.add(androidVersion);
+                        }
+                    }
+
+                    mValuesFilter = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mValuesFilter;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mValuesFilter = (ArrayList<ProductionOrderDetail>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
 
 }
