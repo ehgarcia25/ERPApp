@@ -77,7 +77,7 @@ public class ProductionLineAdapter extends RecyclerView.Adapter<ProductionLineAd
 
                     for (ProductionLine androidVersion : mValues) {
 
-                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+                        if (androidVersion.getName() != null && androidVersion.getName().toLowerCase().contains(charString)) {
 
                             filteredList.add(androidVersion);
                         }

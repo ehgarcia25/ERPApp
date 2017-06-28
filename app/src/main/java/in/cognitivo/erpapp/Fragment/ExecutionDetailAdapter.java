@@ -101,7 +101,7 @@ public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetail
 
                     for (ExecutionDetail androidVersion : mValues) {
 
-                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+                        if (androidVersion.getName() != null && androidVersion.getName().toLowerCase().contains(charString)) {
 
                             filteredList.add(androidVersion);
                         }

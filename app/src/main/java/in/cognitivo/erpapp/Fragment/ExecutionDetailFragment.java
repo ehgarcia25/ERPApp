@@ -22,8 +22,6 @@ import in.cognitivo.erpapp.Entity.ExecutionDetail;
 import in.cognitivo.erpapp.Model.ProductionOrderModelAcces;
 import in.cognitivo.erpapp.R;
 import in.cognitivo.erpapp.Utility.URL;
-import in.cognitivo.erpapp.dummy.DummyContent;
-import in.cognitivo.erpapp.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.

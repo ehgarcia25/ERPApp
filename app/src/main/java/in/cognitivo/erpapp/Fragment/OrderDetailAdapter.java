@@ -16,10 +16,10 @@ import java.util.List;
 
 import in.cognitivo.erpapp.Entity.ProductionOrderDetail;
 import in.cognitivo.erpapp.R;
-import in.cognitivo.erpapp.dummy.DummyContent.DummyItem;
+
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ProductionOrderDetail} and makes a call to the
  * specified {@link OrderDetailFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
@@ -146,7 +146,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
                     for (ProductionOrderDetail androidVersion : mValues) {
 
-                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+                        if (androidVersion.getName() != null && androidVersion.getName().toLowerCase().contains(charString)) {
 
                             filteredList.add(androidVersion);
                         }

@@ -96,7 +96,7 @@ public class ProductionOrderAdapter extends RecyclerView.Adapter<ProductionOrder
 
                     for (ProductionOrder androidVersion : mValues) {
 
-                        if (androidVersion.getName().toLowerCase().contains(charString) && androidVersion.getName() != null) {
+                        if (androidVersion.getName() != null && androidVersion.getName().toLowerCase().contains(charString)) {
 
                             filteredList.add(androidVersion);
                         }
