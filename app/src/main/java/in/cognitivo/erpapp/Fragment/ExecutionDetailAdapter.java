@@ -14,13 +14,13 @@ import in.cognitivo.erpapp.Entity.ExecutionDetail;
 import in.cognitivo.erpapp.Model.ProductionOrderModelAcces;
 import in.cognitivo.erpapp.R;
 import in.cognitivo.erpapp.Utility.URL;
-import in.cognitivo.erpapp.dummy.DummyContent.DummyItem;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ExecutionDetail} and makes a call to the
  * specified {@link ExecutionDetailFragment.OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
