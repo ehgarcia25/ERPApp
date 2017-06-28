@@ -74,10 +74,10 @@ public class ExecutionDetailAdapter extends RecyclerView.Adapter<ExecutionDetail
 
     private void removeAt(int position) {
         mValuesFilter.remove(position);
-        mValues.remove(position);
+        //mValues.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mValuesFilter.size());
-        notifyItemRangeChanged(position, mValues.size());
+        //notifyItemRangeChanged(position, mValues.size());
     }
 
     @Override
